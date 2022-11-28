@@ -10,7 +10,7 @@ This will be done using a push down automata. This PDA will consume C++ code cha
 
 ## An example piece of code that we will translate:
 
-``` 
+```
   for(int i = 0; i < 10; i++){
     cout << "i * i" << i*i << endl;
   }
@@ -19,3 +19,26 @@ This will be done using a push down automata. This PDA will consume C++ code cha
     cout << "g is less than 4" << endl;
   }
 ```
+
+## Git Branch Notes
+
+### Using branches
+
+- Name your branches based on what you worked on and checkout using git checkout -b <name_of_branch>
+- Once checked out verify what branch you are located on using git branch
+- Delete a branch using git branch -d <name_of_branch>
+
+### How to commit changes
+
+- Switch to a new terminal
+- Display your status using git status
+- Record the current state of the working directory with git stash
+- Checkout a new branch using git checkout -b <name_of_branch>
+- Verify you checked out the correct new branch using git branch
+  - you will see that an \* is next to the current branch you are working on
+- Pop your current state of the working directory using git stash pop
+- Stage the current changes to the working directory using git add <path_to_directory>
+- Commmit your changes using git commit
+  - the command will open a text editor and you can add your commit message above the #
+- Finally, push your changes using git push --set-upstream origin <name_of_branch>
+  - Delete the branch once you have merged
