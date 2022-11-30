@@ -8,6 +8,7 @@ import (
 )
 
 
+
 func ReadWords(filename string) []string{
 	items := []string{}
 		//open the text file
