@@ -2,25 +2,24 @@ package main
 
 // Multiple packages can be imported together.
 import (
+	"bufio"
 	"fmt"
 	"os"
-	"bufio"
+	"strings"
 )
 
-
-
-func ReadWords(filename string) []string{
+func ReadWords(filename string) []string {
 	items := []string{}
-		//open the text file
+	//open the text file
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println(err.Error())
 		return items
 	}
-		//close the file later
+	//close the file later
 	defer file.Close()
 
-		//read in each file and split on the whitespace
+	//read in each file and split on the whitespace
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanBytes)
 	for scanner.Scan() {
@@ -29,7 +28,7 @@ func ReadWords(filename string) []string{
 	return items
 }
 
-//driver code
+/*driver code
 func main() {
 		chars := []string{}
 		filename := "example.cpp"
@@ -43,3 +42,26 @@ func main() {
 			//push our identifying character on the stack
 			//continue the loop
 }
+//*/
+
+/**/
+
+func main() {
+	TestTokenizerRepl()
+
+}
+
+func TestTokenizerRepl() {
+	for {
+		reader := bufio.NewReader(os.Stdin)
+		input, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("An error occured while reading input. Please try again", err)
+			return
+		}
+		input = strings.TrimSuffix(input, "\n")
+		fmt.Println(Tokenizer(input))
+	}
+}
+
+//*/
