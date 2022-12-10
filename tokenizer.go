@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	TID = iota
-	TKEY
-	TCTRL
-	TSLIT
-	TNLIT
-	TBLIT
-	TSPACE
+	TID    = iota //0
+	TKEY          //1
+	TCTRL         //2
+	TSLIT         //3
+	TNLIT         //4
+	TBLIT         //5
+	TSPACE        //6
 )
 
 const debug bool = false
@@ -25,67 +25,92 @@ type Token struct {
 
 // Tokenizer takes in a raw string input and creates an ordered list of Tokens representing
 // the lexical meaning of the input.
-func Tokenizer(input string) (Token, error) {
+func Tokenizer(input string) ([]Token, error) {
 
-	runes := []rune(input)
+	var ret []Token
+	lastTokenPos := 0
+	for i := 0; i < len(input); i++ {
+		fmt.Println(lastTokenPos)
+		runes := []rune(input)
 
-	state := Start
-	lastState := Start
-	inputi := 0
-	for state != NONE && inputi < len(runes) {
-		lastState = state
-		state = Dfa(state, runes[inputi])
-		inputi++
+		state := Start
+		lastState := Start
+		for state != NONE && i < len(input) {
+			lastState = state
+			state = Dfa(state, runes[i])
+			i++
 
-		if debug {
-			fmt.Printf("lastState %d currState %d\n", lastState, state)
+			if debug {
+				fmt.Printf("lastState %d currState %d\n", lastState, state)
+			}
+		}
+
+		// If hit end of input need to convert state to lastState
+		if lastState == NONE || lastState == Start {
+			lastState = state
+			i++
+		}
+
+		if !IsAccepted(lastState) {
+			return nil, fmt.Errorf("syntax error at %d, final state %d curr state %d", i, lastState, state)
+		}
+
+		pos := lastTokenPos
+		raw := runes[lastTokenPos : i-1]
+		lastTokenPos += len(raw)
+
+		switch lastState {
+		case Id, Alpha:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TID,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		case AUTO, CHAR, DOUBLE, FLOAT, INT, LONG,
+			SHORT, STRING, ELSE, IF, WHILE, FOR:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TKEY,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		case CurlyClose, CurlyOpen, Open, Close, Stop:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TCTRL,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		case WHITE:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TSPACE,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		default:
+			if START_INTERMED < lastState && lastState < END_INTERMED {
+				ret = append(ret, Token{
+					Raw:      string(raw),
+					Type:     TID,
+					Position: pos,
+					Len:      len(raw),
+				})
+				i = lastTokenPos - 1
+				continue
+			}
+			return nil, fmt.Errorf("Token %d not recognized", lastState)
 		}
 	}
 
-	// If hit end of input need to convert state to lastState
-	if !(inputi < len(runes)) && state != NONE {
-		lastState = state
-		inputi++
-	}
-
-	if !IsAccepted(lastState) {
-		return Token{}, fmt.Errorf("syntax error at %d", inputi)
-	}
-
-	raw := runes[0 : inputi-1]
-	pos := 0
-
-	switch lastState {
-	case Id, Alpha:
-		return Token{
-			Raw:      string(raw),
-			Type:     TID,
-			Position: pos,
-			Len:      len(raw),
-		}, nil
-	case AUTO, CHAR, DOUBLE, FLOAT, INT, LONG,
-		SHORT, STRING, ELSE, IF, WHILE, FOR:
-		return Token{
-			Raw:      string(raw),
-			Type:     TKEY,
-			Position: pos,
-			Len:      len(raw),
-		}, nil
-	case CurlyClose, CurlyOpen, Open, Close, Stop:
-		return Token{
-			Raw:      string(raw),
-			Type:     TCTRL,
-			Position: pos,
-			Len:      len(raw),
-		}, nil
-	case WHITE:
-		return Token{
-			Raw:      string(raw),
-			Type:     TSPACE,
-			Position: pos,
-			Len:      len(raw),
-		}, nil
-	default:
-		return Token{}, fmt.Errorf("Token %d not recognized", lastState)
-	}
+	return ret, nil
 }

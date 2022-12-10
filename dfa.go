@@ -14,55 +14,57 @@ const (
 	Close
 	Stop
 	WHITE
+	WHILE
+	AUTO
+	CHAR
+	DOUBLE
+	FLOAT
+	LONG
+	SHORT
+	STRING
+	ELSE
+	FOR
+	IF
+	INT
 
+	START_INTERMED
 	A
 	AU
 	AUT
-	AUTO
 	C
 	CH
 	CHA
-	CHAR
 	D
 	DO
 	DOU
 	DOUB
 	DOUBL
-	DOUBLE
 	F
 	FL
 	FLO
 	FLOA
-	FLOAT
 	I
 	IN
-	INT
 	L
 	LO
 	LON
-	LONG
 	S
 	SH
 	SHO
 	SHOR
-	SHORT
 	ST
 	STR
 	STRI
 	STRIN
-	STRING
 	E
 	EL
 	ELS
-	ELSE
 	FO
-	FOR
-	IF
 	W
 	WH
 	WHI
 	WHIL
-	WHILE
+	END_INTERMED
 )
 
 func IsAccepted(s int) bool {
@@ -86,7 +88,8 @@ func IsAccepted(s int) bool {
 		s == Alpha ||
 		s == Id ||
 		s == Num ||
-		s == WHITE
+		s == WHITE ||
+		(START_INTERMED < s && s < END_INTERMED)
 }
 
 func Dfa(state int, input rune) int {

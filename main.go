@@ -52,6 +52,8 @@ func main() {
 }
 
 func TestTokenizerRepl() {
+	fmt.Println(Tokenizer("for(){}"))
+
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		input, err := reader.ReadString('\n')
