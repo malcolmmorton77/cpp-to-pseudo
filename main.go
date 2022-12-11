@@ -28,28 +28,42 @@ func ReadWords(filename string) []string {
 	return items
 }
 
-/*driver code
+/*driver code*/
 func main() {
-		chars := []string{}
-		filename := "example.cpp"
-		//take in a text file with C++ code
-		chars = ReadWords(filename)
-		for i, s := range chars{
-			fmt.Println(i, s)
-		}
-		//handle the \n to convert to the character for a stack
-			//identify the \n
-			//push our identifying character on the stack
-			//continue the loop
+	// chars := []string{}
+	filename := "example.txt"
+	//take in a text file with C++ code
+	// chars = ReadWords(filename)
+	// for i, s := range chars{
+	// 	fmt.Println(i, s)
+	// }
+	//handle the \n to convert to the character for a stack
+	//identify the \n
+	//push our identifying character on the stack
+	//continue the loop
+
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+	tokens, err := Tokenizer(string(data))
+	if err != nil {
+		panic(err)
+	}
+
+	for _, token := range tokens {
+		fmt.Println(token.ToString())
+	}
 }
+
 //*/
 
 /**/
 
-func main() {
-	TestTokenizerRepl()
+// func main() {
+// 	TestTokenizerRepl()
 
-}
+// }
 
 func TestTokenizerRepl() {
 	fmt.Println(Tokenizer("for(){}"))
@@ -63,6 +77,7 @@ func TestTokenizerRepl() {
 		}
 		input = strings.TrimSuffix(input, "\n")
 		fmt.Println(Tokenizer(input))
+
 	}
 }
 

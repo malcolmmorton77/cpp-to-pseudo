@@ -4,28 +4,44 @@ import "unicode"
 
 const (
 	NONE = iota
-	Start
+	START
 	Alpha
 	Id
 	Num
+	White
+
 	CurlyOpen
 	CurlyClose
 	Open
 	Close
 	Stop
-	WHITE
-	WHILE
-	AUTO
-	CHAR
-	DOUBLE
-	FLOAT
-	LONG
-	SHORT
-	STRING
-	ELSE
-	FOR
-	IF
-	INT
+	CompOp
+	AssignOp
+	ArithOp
+	Incr
+	Decr
+
+	Plus
+	Minus
+	Asterisk
+	Slash
+	Percent
+	Equal
+	Less
+	More
+
+	While
+	Auto
+	Char
+	Double
+	Float
+	Long
+	Short
+	String
+	Else
+	For
+	If
+	Int
 
 	START_INTERMED
 	A
@@ -68,27 +84,42 @@ const (
 )
 
 func IsAccepted(s int) bool {
-	return s == AUTO ||
-		s == CHAR ||
-		s == DOUBLE ||
-		s == FLOAT ||
-		s == INT ||
-		s == LONG ||
-		s == SHORT ||
-		s == STRING ||
-		s == ELSE ||
-		s == FOR ||
-		s == IF ||
-		s == WHILE ||
+	return s == Auto ||
+		s == Char ||
+		s == Double ||
+		s == Float ||
+		s == Int ||
+		s == Long ||
+		s == Short ||
+		s == String ||
+		s == Else ||
+		s == For ||
+		s == If ||
+		s == While ||
+
 		s == CurlyClose ||
 		s == CurlyOpen ||
 		s == Open ||
 		s == Close ||
 		s == Stop ||
+		s == CompOp ||
+		s == AssignOp ||
+		s == ArithOp ||
+		s == Plus ||
+		s == Minus ||
+		s == Asterisk ||
+		s == Slash ||
+		s == Percent ||
+		s == Equal ||
+		s == Less ||
+		s == More ||
+		s == Incr ||
+		s == Decr ||
+
 		s == Alpha ||
 		s == Id ||
 		s == Num ||
-		s == WHITE ||
+		s == White ||
 		(START_INTERMED < s && s < END_INTERMED)
 }
 
@@ -96,7 +127,7 @@ func Dfa(state int, input rune) int {
 	switch state {
 	case NONE:
 		return NONE
-	case Start:
+	case START:
 		if input == 'a' {
 			return A
 		} else if input == 'c' {
@@ -115,6 +146,7 @@ func Dfa(state int, input rune) int {
 			return S
 		} else if input == 'w' {
 			return W
+
 		} else if input == '{' {
 			return CurlyOpen
 		} else if input == '}' {
@@ -123,14 +155,31 @@ func Dfa(state int, input rune) int {
 			return Open
 		} else if input == ')' {
 			return Close
+		} else if input == '<' {
+			return Less
+		} else if input == '>' {
+			return More
+		} else if input == '+' {
+			return Plus
+		} else if input == '-' {
+			return Minus
+		} else if input == '*' {
+			return Asterisk
+		} else if input == '/' {
+			return Slash
+		} else if input == '%' {
+			return Percent
+		} else if input == '=' {
+			return Equal
 		} else if input == ';' {
 			return Stop
+
 		} else if unicode.IsDigit(input) {
 			return Num
 		} else if unicode.IsLetter(input) || input == '_' || input == '$' {
 			return Alpha
 		} else if unicode.IsSpace(input) {
-			return WHITE
+			return White
 		} else {
 			return NONE
 		}
@@ -155,36 +204,92 @@ func Dfa(state int, input rune) int {
 		return NONE
 	case Stop:
 		return NONE
-	case WHITE:
+	case CompOp:
+		return NONE
+	case Plus:
+		if input == '=' {
+			return AssignOp
+		} else if input == '+' {
+			return Incr
+		} else {
+			return NONE
+		}
+	case Minus:
+		if input == '=' {
+			return AssignOp
+		} else if input == '-' {
+			return Decr
+		} else {
+			return NONE
+		}
+	case Asterisk:
+		if input == '=' {
+			return AssignOp
+		} else {
+			return NONE
+		}
+	case Slash:
+		if input == '=' {
+			return AssignOp
+		} else {
+			return NONE
+		}
+	case Percent:
+		if input == '=' {
+			return AssignOp
+		} else {
+			return NONE
+		}
+	case Equal:
+		if input == '=' {
+			return CompOp
+		} else {
+			return NONE
+		}
+	case Less:
+		if input == '=' {
+			return CompOp
+		} else {
+			return NONE
+		}
+	case More:
+		if input == '=' {
+			return CompOp
+		} else {
+			return NONE
+		}
+	case Incr, Decr:
+		return NONE
+	case White:
 		if unicode.IsSpace(input) {
-			return WHITE
+			return White
 		} else {
 			return NONE
 		}
 
-	case AUTO:
+	case Auto:
 		return kwIdClosure(input)
-	case CHAR:
+	case Char:
 		return kwIdClosure(input)
-	case DOUBLE: //
+	case Double: //
 		return kwIdClosure(input)
-	case FLOAT:
+	case Float:
 		return kwIdClosure(input)
-	case INT:
+	case Int:
 		return kwIdClosure(input)
-	case LONG:
+	case Long:
 		return kwIdClosure(input)
-	case SHORT:
+	case Short:
 		return kwIdClosure(input)
-	case STRING:
+	case String:
 		return kwIdClosure(input)
-	case ELSE:
+	case Else:
 		return kwIdClosure(input)
-	case IF:
+	case If:
 		return kwIdClosure(input)
-	case WHILE:
+	case While:
 		return kwIdClosure(input)
-	case FOR:
+	case For:
 		return kwIdClosure(input)
 
 	case A:
@@ -201,7 +306,7 @@ func Dfa(state int, input rune) int {
 		}
 	case AUT:
 		if input == 'o' {
-			return AUTO
+			return Auto
 		} else {
 			return kwIdClosure(input)
 		}
@@ -219,7 +324,7 @@ func Dfa(state int, input rune) int {
 		}
 	case CHA:
 		if input == 'r' {
-			return CHAR
+			return Char
 		} else {
 			return kwIdClosure(input)
 		}
@@ -249,7 +354,7 @@ func Dfa(state int, input rune) int {
 		}
 	case DOUBL:
 		if input == 'e' {
-			return DOUBLE
+			return Double
 		} else {
 			return kwIdClosure(input)
 		}
@@ -275,7 +380,7 @@ func Dfa(state int, input rune) int {
 		}
 	case FLOA:
 		if input == 't' {
-			return FLOAT
+			return Float
 		} else {
 			return kwIdClosure(input)
 		}
@@ -283,13 +388,13 @@ func Dfa(state int, input rune) int {
 		if input == 'n' {
 			return IN
 		} else if input == 'f' {
-			return IF
+			return If
 		} else {
 			return kwIdClosure(input)
 		}
 	case IN:
 		if input == 't' {
-			return INT
+			return Int
 		} else {
 			return kwIdClosure(input)
 		}
@@ -307,7 +412,7 @@ func Dfa(state int, input rune) int {
 		}
 	case LON:
 		if input == 'g' {
-			return LONG
+			return Long
 		} else {
 			return kwIdClosure(input)
 		}
@@ -333,7 +438,7 @@ func Dfa(state int, input rune) int {
 		}
 	case SHOR:
 		if input == 't' {
-			return SHORT
+			return Short
 		} else {
 			return kwIdClosure(input)
 		}
@@ -357,7 +462,7 @@ func Dfa(state int, input rune) int {
 		}
 	case STRIN:
 		if input == 'g' {
-			return STRING
+			return String
 		} else {
 			return kwIdClosure(input)
 		}
@@ -375,13 +480,13 @@ func Dfa(state int, input rune) int {
 		}
 	case ELS:
 		if input == 'e' {
-			return ELSE
+			return Else
 		} else {
 			return kwIdClosure(input)
 		}
 	case FO:
 		if input == 'r' {
-			return FOR
+			return For
 		} else {
 			return kwIdClosure(input)
 		}
@@ -405,7 +510,7 @@ func Dfa(state int, input rune) int {
 		}
 	case WHIL:
 		if input == 'e' {
-			return WHILE
+			return While
 		} else {
 			return kwIdClosure(input)
 		}

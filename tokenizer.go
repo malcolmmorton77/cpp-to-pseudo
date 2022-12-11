@@ -12,6 +12,7 @@ const (
 	TNLIT         //4
 	TBLIT         //5
 	TSPACE        //6
+	TOP
 )
 
 const debug bool = false
@@ -21,6 +22,30 @@ type Token struct {
 	Type     int
 	Position int
 	Len      int
+}
+
+func (t Token) ToString() string {
+	s := "INV_TOK"
+	switch t.Type {
+	case TID:
+		s = "ID"
+	case TKEY:
+		s = "KEY"
+	case TCTRL:
+		s = "CTRL"
+	case TSLIT:
+		s = "STR_LIT"
+	case TNLIT:
+		s = "NUM_LIT"
+	case TBLIT:
+		s = "BOOL_LIT"
+	case TSPACE:
+		s = "SPACE"
+	case TOP:
+		s = "OP"
+	}
+
+	return fmt.Sprintf("%s\t%s\t(%d,%d)", s, t.Raw, t.Position, t.Len)
 }
 
 // Tokenizer takes in a raw string input and creates an ordered list of Tokens representing
@@ -33,8 +58,8 @@ func Tokenizer(input string) ([]Token, error) {
 		fmt.Println(lastTokenPos)
 		runes := []rune(input)
 
-		state := Start
-		lastState := Start
+		state := START
+		lastState := START
 		for state != NONE && i < len(input) {
 			lastState = state
 			state = Dfa(state, runes[i])
@@ -46,7 +71,7 @@ func Tokenizer(input string) ([]Token, error) {
 		}
 
 		// If hit end of input need to convert state to lastState
-		if lastState == NONE || lastState == Start {
+		if lastState == NONE || lastState == START {
 			lastState = state
 			i++
 		}
@@ -69,11 +94,21 @@ func Tokenizer(input string) ([]Token, error) {
 			})
 			i = lastTokenPos - 1
 			continue
-		case AUTO, CHAR, DOUBLE, FLOAT, INT, LONG,
-			SHORT, STRING, ELSE, IF, WHILE, FOR:
+		case Auto, Char, Double, Float, Int, Long,
+			Short, String, Else, If, While, For:
 			ret = append(ret, Token{
 				Raw:      string(raw),
 				Type:     TKEY,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		case CompOp, AssignOp, ArithOp, Plus, Minus, Asterisk, Slash,
+			Percent, Equal, Less, More, Incr, Decr:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TOP,
 				Position: pos,
 				Len:      len(raw),
 			})
@@ -88,7 +123,7 @@ func Tokenizer(input string) ([]Token, error) {
 			})
 			i = lastTokenPos - 1
 			continue
-		case WHITE:
+		case White:
 			ret = append(ret, Token{
 				Raw:      string(raw),
 				Type:     TSPACE,
