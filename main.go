@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-func ReadWords(filename string) []string {
-	items := []string{}
+func ReadWords(filename string) string {
+	items := ""
 	//open the text file
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println(err.Error())
-		return items
+		return items //return an empty string to buffer after printing error
 	}
 	//close the file later
 	defer file.Close()
@@ -23,20 +23,28 @@ func ReadWords(filename string) []string {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanBytes)
 	for scanner.Scan() {
-		items = append(items, scanner.Text())
+		items += scanner.Text() // append the scanner text in bytes to items string
 	}
-	return items
+	return items // return the items string
 }
 
-/*driver code*/
+// driver code
 func main() {
-	// chars := []string{}
-	filename := "example.txt"
+	//declare variables
+	chars := ""
+	filename := "example.cpp"
+
 	//take in a text file with C++ code
-	// chars = ReadWords(filename)
-	// for i, s := range chars{
-	// 	fmt.Println(i, s)
-	// }
+	chars = ReadWords(filename)
+
+	//testing the printing of the C++ code
+	fmt.Println(chars)
+	var i = 0
+	for i < len(chars) {
+		fmt.Println(string(chars[i]))
+		i += 1
+	}
+
 	//handle the \n to convert to the character for a stack
 	//identify the \n
 	//push our identifying character on the stack
@@ -56,15 +64,6 @@ func main() {
 	}
 }
 
-//*/
-
-/**/
-
-// func main() {
-// 	TestTokenizerRepl()
-
-// }
-
 func TestTokenizerRepl() {
 	fmt.Println(Tokenizer("for(){}"))
 
@@ -80,5 +79,3 @@ func TestTokenizerRepl() {
 
 	}
 }
-
-//*/
