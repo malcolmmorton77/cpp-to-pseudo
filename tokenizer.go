@@ -132,6 +132,15 @@ func Tokenizer(input string) ([]Token, error) {
 			})
 			i = lastTokenPos - 1
 			continue
+		case Num, Digits:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TNLIT,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
 		default:
 			if START_INTERMED < lastState && lastState < END_INTERMED {
 				ret = append(ret, Token{

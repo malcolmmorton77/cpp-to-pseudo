@@ -32,7 +32,7 @@ func ReadWords(filename string) string {
 func main() {
 	//declare variables
 	chars := ""
-	filename := "example.cpp"
+	filename := "text.txt"
 
 	//take in a text file with C++ code
 	chars = ReadWords(filename)

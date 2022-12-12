@@ -7,8 +7,11 @@ const (
 	START
 	Alpha
 	Id
-	Num
+	Num //\d*\.d*
 	White
+
+	Digits //\d*
+	Period
 
 	CurlyOpen
 	CurlyClose
@@ -96,6 +99,7 @@ func IsAccepted(s int) bool {
 		s == For ||
 		s == If ||
 		s == While ||
+		s == Digits ||
 
 		s == CurlyClose ||
 		s == CurlyOpen ||
@@ -174,12 +178,28 @@ func Dfa(state int, input rune) int {
 		} else if input == ';' {
 			return Stop
 
+		} else if input == '.' {
+			return Period
 		} else if unicode.IsDigit(input) {
-			return Num
+			return Digits
 		} else if unicode.IsLetter(input) || input == '_' || input == '$' {
 			return Alpha
 		} else if unicode.IsSpace(input) {
 			return White
+		} else {
+			return NONE
+		}
+	case Digits:
+		if unicode.IsDigit(input) {
+			return Digits
+		} else if input == '.' {
+			return Num
+		} else {
+			return NONE
+		}
+	case Period:
+		if unicode.IsDigit(input) {
+			return Num
 		} else {
 			return NONE
 		}
@@ -193,7 +213,11 @@ func Dfa(state int, input rune) int {
 			return NONE
 		}
 	case Num:
-
+		if unicode.IsDigit(input) {
+			return Num
+		} else {
+			return NONE
+		}
 	case CurlyOpen:
 		return NONE
 	case CurlyClose:
