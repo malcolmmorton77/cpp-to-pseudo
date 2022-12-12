@@ -1,7 +1,0 @@
-for(int i = 0; i < 10; i++){
-  cout << "i * i" << i*i << endl;
-}
-int g = 0
-if(g < 4){
-  cout << "g is less than 4" << endl;
-}
