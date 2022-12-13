@@ -2,23 +2,34 @@
 
 ## Problem:
 
-We propose our project convert C++ code into pseudocode. We used a subset of the C++ language such that any valid string in our grammar is valid C++ code, but not vice versa.
+> We propose our project convert C++ code into pseudocode. We used a subset of the C++ language such that any valid string in our grammar is valid C++ code, but not vice versa.
 
 ## Solution:
 
-This will be done using a push down automata. This PDA will consume C++ code character by character, left to right, top to bottom, pushing intermediate and final symbols on to the stack, with an accepted string generating a stack of defined, exclusive symbols using the final symbol set. These final symbols will represent the pseudocode of the C++ code, while intermediate symbols will be used by the PDA to help with ordering and creating semantic meaning in the stack. Since the final symbols won't be human readable, these symbols will then be converted to human readable pseudocode.
+> This will be done using a push down automata. This PDA will consume C++ code character by character, left to right, top to bottom, pushing intermediate and final symbols on to the stack, with an accepted string generating a stack of defined, exclusive symbols using the final symbol set. These final symbols will represent the pseudocode of the C++ code, while intermediate symbols will be used by the PDA to help with ordering and creating semantic meaning in the stack. Since the final symbols won't be human readable, these symbols will then be converted to human readable pseudocode.
+
+## To run:
+
+- `go run main.go tokenizer.go dfa.go`
 
 ## An example piece of code that we will translate:
 
-```
-  for(int i = 0; i < 10; i++){
-    cout << "i * i" << i*i << endl;
+```cpp
+  for(int i = v0; i < v10; i++){
+    cout << qi * iq + i*i << endl;
   }
-  int g = 0
-  if(g < 4){
-    cout << "g is less than 4" << endl;
+  int g = v0
+  if(g < v4){
+    cout << qg is less than v4q << endl;
   }
 ```
+
+## Explanation of code
+
+### main.go
+
+- main.go is the driver code and reads in the text file full of example `cpp` code
+- main.go contains the `ReadWords` function, and a call to Tokenizer
 
 ## Git Branch Notes
 
