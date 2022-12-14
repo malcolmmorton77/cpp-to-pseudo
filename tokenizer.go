@@ -77,7 +77,7 @@ func Tokenizer(input string) ([]Token, error) {
 		}
 
 		if !IsAccepted(lastState) {
-			return nil, fmt.Errorf("syntax error at %d, final state %d curr state %d", i, lastState, state)
+			return nil, fmt.Errorf("syntax error at %d, final state %d curr state %d. State may not be accepted", i, lastState, state)
 		}
 
 		pos := lastTokenPos
@@ -85,6 +85,24 @@ func Tokenizer(input string) ([]Token, error) {
 		lastTokenPos += len(raw)
 
 		switch lastState {
+		case Stringlit:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TSLIT,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		case True, False:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TBLIT,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
 		case Id, Alpha:
 			ret = append(ret, Token{
 				Raw:      string(raw),
@@ -105,7 +123,7 @@ func Tokenizer(input string) ([]Token, error) {
 			i = lastTokenPos - 1
 			continue
 		case CompOp, AssignOp, ArithOp, Plus, Minus, Asterisk, Slash,
-			Percent, Equal, Less, More, Incr, Decr:
+			Percent, Equal, Less, More, Incr, Decr, Lshift, Rshift:
 			ret = append(ret, Token{
 				Raw:      string(raw),
 				Type:     TOP,
@@ -127,6 +145,15 @@ func Tokenizer(input string) ([]Token, error) {
 			ret = append(ret, Token{
 				Raw:      string(raw),
 				Type:     TSPACE,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
+		case Num, Digits:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TNLIT,
 				Position: pos,
 				Len:      len(raw),
 			})

@@ -7,8 +7,11 @@ const (
 	START
 	Alpha
 	Id
-	Num
+	Num //\d*\.d*
 	White
+
+	Digits //\d*
+	Period
 
 	CurlyOpen
 	CurlyClose
@@ -29,6 +32,13 @@ const (
 	Equal
 	Less
 	More
+	Lshift
+	Rshift
+
+	Quote
+	Openslit
+	Escapedslit
+	Stringlit
 
 	While
 	Auto
@@ -42,6 +52,8 @@ const (
 	For
 	If
 	Int
+	True
+	False
 
 	START_INTERMED
 	A
@@ -56,6 +68,9 @@ const (
 	DOUB
 	DOUBL
 	F
+	FA
+	FAL
+	FALS
 	FL
 	FLO
 	FLOA
@@ -80,6 +95,9 @@ const (
 	WH
 	WHI
 	WHIL
+	T
+	TR
+	TRU
 	END_INTERMED
 )
 
@@ -96,6 +114,7 @@ func IsAccepted(s int) bool {
 		s == For ||
 		s == If ||
 		s == While ||
+		s == Digits ||
 
 		s == CurlyClose ||
 		s == CurlyOpen ||
@@ -115,6 +134,11 @@ func IsAccepted(s int) bool {
 		s == More ||
 		s == Incr ||
 		s == Decr ||
+		s == Lshift ||
+		s == Rshift ||
+		s == Stringlit ||
+		s == True ||
+		s == False ||
 
 		s == Alpha ||
 		s == Id ||
@@ -146,6 +170,8 @@ func Dfa(state int, input rune) int {
 			return S
 		} else if input == 'w' {
 			return W
+		} else if input == 't' {
+			return T
 
 		} else if input == '{' {
 			return CurlyOpen
@@ -173,13 +199,42 @@ func Dfa(state int, input rune) int {
 			return Equal
 		} else if input == ';' {
 			return Stop
-
+		} else if input == '"' {
+			return Quote
+		} else if input == '.' {
+			return Period
 		} else if unicode.IsDigit(input) {
-			return Num
+			return Digits
 		} else if unicode.IsLetter(input) || input == '_' || input == '$' {
 			return Alpha
 		} else if unicode.IsSpace(input) {
 			return White
+		} else {
+			return NONE
+		}
+	case Digits:
+		if unicode.IsDigit(input) {
+			return Digits
+		} else if input == '.' {
+			return Num
+		} else {
+			return NONE
+		}
+	case Quote:
+		if input == '"' {
+			return Stringlit
+		} else if input == '\\' {
+			return Escapedslit
+		} else {
+			return Quote
+		}
+	case Escapedslit:
+		return Quote
+	case Stringlit:
+		return NONE
+	case Period:
+		if unicode.IsDigit(input) {
+			return Num
 		} else {
 			return NONE
 		}
@@ -193,7 +248,11 @@ func Dfa(state int, input rune) int {
 			return NONE
 		}
 	case Num:
-
+		if unicode.IsDigit(input) {
+			return Num
+		} else {
+			return NONE
+		}
 	case CurlyOpen:
 		return NONE
 	case CurlyClose:
@@ -205,6 +264,10 @@ func Dfa(state int, input rune) int {
 	case Stop:
 		return NONE
 	case CompOp:
+		return NONE
+	case Lshift:
+		return NONE
+	case Rshift:
 		return NONE
 	case Plus:
 		if input == '=' {
@@ -249,12 +312,16 @@ func Dfa(state int, input rune) int {
 	case Less:
 		if input == '=' {
 			return CompOp
+		} else if input == '<' {
+			return Lshift
 		} else {
 			return NONE
 		}
 	case More:
 		if input == '=' {
 			return CompOp
+		} else if input == '>' {
+			return Rshift
 		} else {
 			return NONE
 		}
@@ -291,6 +358,10 @@ func Dfa(state int, input rune) int {
 		return kwIdClosure(input)
 	case For:
 		return kwIdClosure(input)
+	case False:
+		return kwIdClosure(input)
+	case True:
+		return kwIdClosure(input)
 
 	case A:
 		if input == 'u' {
@@ -307,6 +378,24 @@ func Dfa(state int, input rune) int {
 	case AUT:
 		if input == 'o' {
 			return Auto
+		} else {
+			return kwIdClosure(input)
+		}
+	case T:
+		if input == 'r' {
+			return TR
+		} else {
+			return kwIdClosure(input)
+		}
+	case TR:
+		if input == 'u' {
+			return TRU
+		} else {
+			return kwIdClosure(input)
+		}
+	case TRU:
+		if input == 'e' {
+			return True
 		} else {
 			return kwIdClosure(input)
 		}
@@ -363,6 +452,26 @@ func Dfa(state int, input rune) int {
 			return FO
 		} else if input == 'l' {
 			return FL
+		} else if input == 'a' {
+			return FA
+		} else {
+			return kwIdClosure(input)
+		}
+	case FA:
+		if input == 'l' {
+			return FAL
+		} else {
+			return kwIdClosure(input)
+		}
+	case FAL:
+		if input == 's' {
+			return FALS
+		} else {
+			return kwIdClosure(input)
+		}
+	case FALS:
+		if input == 'e' {
+			return False
 		} else {
 			return kwIdClosure(input)
 		}
