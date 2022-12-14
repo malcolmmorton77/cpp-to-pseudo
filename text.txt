@@ -21,3 +21,7 @@ int _test=11
 long $jejs_3434=9203
 short _=0
 
+"test"
+"test\n"
+"test\\'"
+

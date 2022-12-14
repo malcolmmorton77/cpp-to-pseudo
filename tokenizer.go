@@ -85,6 +85,15 @@ func Tokenizer(input string) ([]Token, error) {
 		lastTokenPos += len(raw)
 
 		switch lastState {
+		case Stringlit:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TSLIT,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
 		case Id, Alpha:
 			ret = append(ret, Token{
 				Raw:      string(raw),

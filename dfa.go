@@ -35,6 +35,11 @@ const (
 	Lshift
 	Rshift
 
+	Quote
+	Openslit
+	Escapedslit
+	Stringlit
+
 	While
 	Auto
 	Char
@@ -123,6 +128,7 @@ func IsAccepted(s int) bool {
 		s == Decr ||
 		s == Lshift ||
 		s == Rshift ||
+		s == Stringlit ||
 
 		s == Alpha ||
 		s == Id ||
@@ -181,7 +187,8 @@ func Dfa(state int, input rune) int {
 			return Equal
 		} else if input == ';' {
 			return Stop
-
+		} else if input == '"' {
+			return Quote
 		} else if input == '.' {
 			return Period
 		} else if unicode.IsDigit(input) {
@@ -201,6 +208,18 @@ func Dfa(state int, input rune) int {
 		} else {
 			return NONE
 		}
+	case Quote:
+		if input == '"' {
+			return Stringlit
+		} else if input == '\\' {
+			return Escapedslit
+		} else {
+			return Quote
+		}
+	case Escapedslit:
+		return Quote
+	case Stringlit:
+		return NONE
 	case Period:
 		if unicode.IsDigit(input) {
 			return Num
