@@ -34,6 +34,9 @@ func main() {
 	for _, token := range tokens {
 		fmt.Println(token.ToString())
 	}
+
+	// call the converter to pseudocode
+	Pseudo(tokens)
 }
 
 func TestTokenizerRepl() {

@@ -1,15 +1,7 @@
 for(int i = v0; i < v10; i++){
-<<<<<<< HEAD
-  cout = qi * iq + i*i + endl;
-}
-int g = v0
-if(g < v4){
-  cout = qg is less than v4q + endl;
-=======
   cout << qi * iq + i*i << endl;
 }
 int g = v0;
 if(g < v4){
   cout << qg is less than v4q << endl;
->>>>>>> origin/main
 }
