@@ -94,6 +94,15 @@ func Tokenizer(input string) ([]Token, error) {
 			})
 			i = lastTokenPos - 1
 			continue
+		case True, False:
+			ret = append(ret, Token{
+				Raw:      string(raw),
+				Type:     TBLIT,
+				Position: pos,
+				Len:      len(raw),
+			})
+			i = lastTokenPos - 1
+			continue
 		case Id, Alpha:
 			ret = append(ret, Token{
 				Raw:      string(raw),

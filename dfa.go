@@ -52,6 +52,8 @@ const (
 	For
 	If
 	Int
+	True
+	False
 
 	START_INTERMED
 	A
@@ -66,6 +68,9 @@ const (
 	DOUB
 	DOUBL
 	F
+	FA
+	FAL
+	FALS
 	FL
 	FLO
 	FLOA
@@ -90,6 +95,9 @@ const (
 	WH
 	WHI
 	WHIL
+	T
+	TR
+	TRU
 	END_INTERMED
 )
 
@@ -129,6 +137,8 @@ func IsAccepted(s int) bool {
 		s == Lshift ||
 		s == Rshift ||
 		s == Stringlit ||
+		s == True ||
+		s == False ||
 
 		s == Alpha ||
 		s == Id ||
@@ -160,6 +170,8 @@ func Dfa(state int, input rune) int {
 			return S
 		} else if input == 'w' {
 			return W
+		} else if input == 't' {
+			return T
 
 		} else if input == '{' {
 			return CurlyOpen
@@ -346,6 +358,10 @@ func Dfa(state int, input rune) int {
 		return kwIdClosure(input)
 	case For:
 		return kwIdClosure(input)
+	case False:
+		return kwIdClosure(input)
+	case True:
+		return kwIdClosure(input)
 
 	case A:
 		if input == 'u' {
@@ -362,6 +378,24 @@ func Dfa(state int, input rune) int {
 	case AUT:
 		if input == 'o' {
 			return Auto
+		} else {
+			return kwIdClosure(input)
+		}
+	case T:
+		if input == 'r' {
+			return TR
+		} else {
+			return kwIdClosure(input)
+		}
+	case TR:
+		if input == 'u' {
+			return TRU
+		} else {
+			return kwIdClosure(input)
+		}
+	case TRU:
+		if input == 'e' {
+			return True
 		} else {
 			return kwIdClosure(input)
 		}
@@ -418,6 +452,26 @@ func Dfa(state int, input rune) int {
 			return FO
 		} else if input == 'l' {
 			return FL
+		} else if input == 'a' {
+			return FA
+		} else {
+			return kwIdClosure(input)
+		}
+	case FA:
+		if input == 'l' {
+			return FAL
+		} else {
+			return kwIdClosure(input)
+		}
+	case FAL:
+		if input == 's' {
+			return FALS
+		} else {
+			return kwIdClosure(input)
+		}
+	case FALS:
+		if input == 'e' {
+			return False
 		} else {
 			return kwIdClosure(input)
 		}

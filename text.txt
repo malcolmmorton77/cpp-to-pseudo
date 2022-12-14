@@ -24,4 +24,10 @@ short _=0
 "test"
 "test\n"
 "test\\'"
+tru
+true
+truel
+fals
+false
+falsel
 
