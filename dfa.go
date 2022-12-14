@@ -32,6 +32,8 @@ const (
 	Equal
 	Less
 	More
+	Lshift
+	Rshift
 
 	While
 	Auto
@@ -119,6 +121,8 @@ func IsAccepted(s int) bool {
 		s == More ||
 		s == Incr ||
 		s == Decr ||
+		s == Lshift ||
+		s == Rshift ||
 
 		s == Alpha ||
 		s == Id ||
@@ -230,6 +234,10 @@ func Dfa(state int, input rune) int {
 		return NONE
 	case CompOp:
 		return NONE
+	case Lshift:
+		return NONE
+	case Rshift:
+		return NONE
 	case Plus:
 		if input == '=' {
 			return AssignOp
@@ -273,12 +281,16 @@ func Dfa(state int, input rune) int {
 	case Less:
 		if input == '=' {
 			return CompOp
+		} else if input == '<' {
+			return Lshift
 		} else {
 			return NONE
 		}
 	case More:
 		if input == '=' {
 			return CompOp
+		} else if input == '>' {
+			return Rshift
 		} else {
 			return NONE
 		}

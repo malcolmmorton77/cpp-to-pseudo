@@ -77,7 +77,7 @@ func Tokenizer(input string) ([]Token, error) {
 		}
 
 		if !IsAccepted(lastState) {
-			return nil, fmt.Errorf("syntax error at %d, final state %d curr state %d", i, lastState, state)
+			return nil, fmt.Errorf("syntax error at %d, final state %d curr state %d. State may not be accepted", i, lastState, state)
 		}
 
 		pos := lastTokenPos
@@ -105,7 +105,7 @@ func Tokenizer(input string) ([]Token, error) {
 			i = lastTokenPos - 1
 			continue
 		case CompOp, AssignOp, ArithOp, Plus, Minus, Asterisk, Slash,
-			Percent, Equal, Less, More, Incr, Decr:
+			Percent, Equal, Less, More, Incr, Decr, Lshift, Rshift:
 			ret = append(ret, Token{
 				Raw:      string(raw),
 				Type:     TOP,
