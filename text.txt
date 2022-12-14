@@ -1,0 +1,23 @@
+for(int i=0;i<p;i++)cout<<1<<endl;
+while(i < 7) {
+    i++
+    i--
+    --I
+    ++I
+    i+=y
+    i-=y
+    i*=y
+    i /= y
+    i %=y
+    a = i+9090
+    b = b-900
+    bool b = (100*100+i/2*2%y) == 1
+    cout << test;
+}
+
+float i=.001
+double i=1.00
+int _test=11
+long $jejs_3434=9203
+short _=0
+
