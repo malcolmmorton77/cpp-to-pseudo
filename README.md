@@ -7,33 +7,36 @@
 ## Solution:
 
 > The input is a text file containing a C++ code snippet containing only lexemes that obey the lexical rules. In addition, code blocks must be surrounded by curly brackets, and every statement must end with a semicolon, or the whitespace generator may not work correctly.
-A deterministic finite automata first analyzes the maximum length of a particular token given a starting position. The tokenizer uses this DFA to, in linear time, tokenize the input into tokens that represent the series of lexemes present in the code sample. Please note that the code is not analyzed for or certified as being semantically or even grammatically correct. This tool assumes the code is correct, and all the lexemes match one of the rules listed below.
-Then, the tokens are handed to a psuedocode generator, which converts the tokens into a "prettified" pseudocode representation that is language agnostic with the intention of being easier to read.
+> A deterministic finite automata first analyzes the maximum length of a particular token given a starting position. The tokenizer uses this DFA to, in linear time, tokenize the input into tokens that represent the series of lexemes present in the code sample. Please note that the code is not analyzed for or certified as being semantically or even grammatically correct. This tool assumes the code is correct, and all the lexemes match one of the rules listed below.
+> Then, the tokens are handed to a psuedocode generator, which converts the tokens into a "prettified" pseudocode representation that is language agnostic with the intention of being easier to read.
 
 ## Lexical Rules
+
 ### All lexemes must match one of the following comma-separated regular expressions:
+
 See Go's unicode class implementation to see the exact definition of :class:
+
 - Operations
-+, -, *, /, %
-++, --
-<<, >>
-<, >, ==, <=, >=
-+=, -=, *=, /=, %=, =
+  +, -, _, /, %
+  ++, --
+  <<, >>
+  <, >, ==, <=, >=
+  +=, -=, _=, /=, %=, =
 - Keywords
-auto, char, double, float, int, long
-short, string, else, if, while, for
+  auto, char, double, float, int, long
+  short, string, else, if, while, for
 - Identifiers (This regex does not match keywords)
-[_$:alpha:][_$:alphanum:]*
+  [\_$:alpha:][_$:alphanum:]\*
 - Control Characters
-{, }, (, ), ;
+  {, }, (, ), ;
 - Boolean Literals
-true, false
+  true, false
 - String Literals
-"([^\\]|(\\.))*"
+  "([^\\]|(\\.))\*"
 - Number Literals
-((.\d+)|(\d+(.\d*)?))
+  ((.\d+)|(\d+(.\d\*)?))
 - Whitespace (These tokens are discarded during pseudocode generation)
-:space:+
+  :space:+
 
 ## To run:
 
@@ -52,11 +55,12 @@ if(g < 4){
 ```
 
 ```pseudo
-for int i = 0 ; i < 10 ; i ++ 
-	print << i * i + i * i << endline 
-int g = 0 
-if g < 4 
-	print << g is less than 4 << endline 
+for let i = 0 ; i < 10 ; i ++
+	print << i * i + i * i << endline
+
+let g = 0
+if g < 4
+	print << g is less than 4 << endline
 ```
 
 ## Explanation of code
@@ -64,7 +68,26 @@ if g < 4
 ### main.go
 
 - main.go is the driver code and reads in the text file full of example `cpp` code
-- main.go contains the `ReadWords` function, and a call to Tokenizer
+- main.go contains the `ReadWords` function, and a call to Tokenizer and Pseudo
+
+### dfa.go
+
+- holds all the states of the dfa
+- has functions relating to dfa acceptance
+
+### pseudo.go
+
+- translates the tokens into pseudocode
+- prints this string to a file
+
+### tokenizer.go
+
+- creates the token from the dfa acceptance
+- appends to a list of tokens to be parsed through in pseudo.go
+
+### text files
+
+- houses example code with robust tests for code
 
 ## Git Branch Notes
 
