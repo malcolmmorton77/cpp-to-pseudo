@@ -6,22 +6,55 @@
 
 ## Solution:
 
-> This will be done using a push down automata. This PDA will consume C++ code character by character, left to right, top to bottom, pushing intermediate and final symbols on to the stack, with an accepted string generating a stack of defined, exclusive symbols using the final symbol set. These final symbols will represent the pseudocode of the C++ code, while intermediate symbols will be used by the PDA to help with ordering and creating semantic meaning in the stack. Since the final symbols won't be human readable, these symbols will then be converted to human readable pseudocode.
+> The input is a text file containing a C++ code snippet containing only lexemes that obey the lexical rules. A deterministic finite automata first analyzes the maximum length of a particular token given a starting position. The tokenizer uses this DFA to, in linear time, tokenize the input into tokens that represent the series of lexemes present in the code sample. Please note that the code is not analyzed for or certified as being semantically or even grammatically correct. This tool assumes the code is correct, and all the lexemes match one of the rules listed below. Then, the tokens are handed to a psuedocode generator, which converts the tokens into a "prettified" pseudocode representation that is language agnostic with the intention of being easier to read.
+
+## Lexical Rules
+### All lexemes must match one of the following comma-separated regular expressions:
+See Go's unicode class implementation to see the exact definition of :class:
+- Operations
++, -, *, /, %
+++, --
+<<, >>
+<, >, ==, <=, >=
++=, -=, *=, /=, %=, =
+- Keywords
+auto, char, double, float, int, long
+short, string, else, if, while, for
+- Identifiers (This regex does not match keywords)
+[_$:alpha:][_$:alphanum:]*
+- Control Characters
+{, }, (, ), ;
+- Boolean Literals
+true, false
+- String Literals
+"([^\\]|(\\.))*"
+- Number Literals
+((.\d+)|(\d+(.\d*)?))
+- Whitespace (These tokens are discarded during pseudocode generation)
+:space:+
 
 ## To run:
 
-- `go run main.go tokenizer.go dfa.go`
+- `go run main.go tokenizer.go pseudo.go dfa.go`
 
 ## An example piece of code that we will translate:
 
 ```cpp
-  for(int i = v0; i < v10; i++){
-    cout << qi * iq + i*i << endl;
-  }
-  int g = v0
-  if(g < v4){
-    cout << qg is less than v4q << endl;
-  }
+for(int i = 0; i < 10; i++){
+  cout << i * i + i*i << endl;
+}
+int g = 0;
+if(g < 4){
+  cout << g is less than 4 << endl;
+}
+```
+
+```pseudo
+for int i = 0 ; i < 10 ; i ++ 
+	print << i * i + i * i << endline 
+int g = 0 
+if g < 4 
+	print << g is less than 4 << endline 
 ```
 
 ## Explanation of code
