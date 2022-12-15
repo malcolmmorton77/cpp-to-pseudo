@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 )
 
@@ -12,6 +13,7 @@ import (
 func Pseudo(tokens []Token) error {
 	flag := 0
 	var tab []rune
+	block := -2
 	code := ""
 	// read from tokens and output the translated piece of code
 	for _, token := range tokens {
@@ -33,14 +35,17 @@ func Pseudo(tokens []Token) error {
 			if token.Raw == "for" {
 				code += token.Raw
 				flag = 1
+				block = -1
 				continue
 			}
 			if token.Raw == "if" {
 				code += token.Raw
+				block = -1
 				continue
 			}
 			if token.Raw == "while" {
 				code += token.Raw
+				block = -1
 				continue
 			}
 			if token.Raw == "int" || token.Raw == "auto" || token.Raw == "string" || token.Raw == "char" || token.Raw == "double" ||
@@ -64,12 +69,42 @@ func Pseudo(tokens []Token) error {
 				}
 				continue
 			}
-			if token.Raw == ")" && flag == 1 {
-				flag = 0
+			if token.Raw == ")" {
+				if flag == 1 {
+					flag = 0
+				}
+
+				//code += fmt.Sprintf("~%d", block)
+
+				switch block {
+				case -2:
+					code += ")"
+				case -1:
+					fmt.Println("Block paren err")
+				case 0:
+					block = -2
+				default:
+					block--
+					code += ")"
+					if block == 0 {
+						block = -2
+					}
+				}
 				continue
 			}
 			if token.Raw == "(" {
-				code += " "
+				// code += fmt.Sprintf("~%d", block)
+				switch block {
+				case -2:
+					code += "("
+				case -1:
+					code += " "
+					block = 0
+				default:
+					block++
+					code += "("
+				}
+
 				continue
 			}
 			if token.Raw == ";" && flag == 1 {
