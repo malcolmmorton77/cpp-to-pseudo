@@ -6,7 +6,9 @@
 
 ## Solution:
 
-> The input is a text file containing a C++ code snippet containing only lexemes that obey the lexical rules. A deterministic finite automata first analyzes the maximum length of a particular token given a starting position. The tokenizer uses this DFA to, in linear time, tokenize the input into tokens that represent the series of lexemes present in the code sample. Please note that the code is not analyzed for or certified as being semantically or even grammatically correct. This tool assumes the code is correct, and all the lexemes match one of the rules listed below. Then, the tokens are handed to a psuedocode generator, which converts the tokens into a "prettified" pseudocode representation that is language agnostic with the intention of being easier to read.
+> The input is a text file containing a C++ code snippet containing only lexemes that obey the lexical rules. In addition, code blocks must be formatted according to typical C++ rules, and every statement must end with a semicolon, or the whitespace generator may not work correctly.
+A deterministic finite automata first analyzes the maximum length of a particular token given a starting position. The tokenizer uses this DFA to, in linear time, tokenize the input into tokens that represent the series of lexemes present in the code sample. Please note that the code is not analyzed for or certified as being semantically or even grammatically correct. This tool assumes the code is correct, and all the lexemes match one of the rules listed below.
+Then, the tokens are handed to a psuedocode generator, which converts the tokens into a "prettified" pseudocode representation that is language agnostic with the intention of being easier to read.
 
 ## Lexical Rules
 ### All lexemes must match one of the following comma-separated regular expressions:
