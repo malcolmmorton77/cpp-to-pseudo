@@ -67,6 +67,7 @@ func Pseudo(tokens []Token) error {
 				if len(tab) > 0 {
 					tab = tab[:len(tab)-1]
 				}
+				code += "\n"
 				continue
 			}
 			if token.Raw == ")" {
