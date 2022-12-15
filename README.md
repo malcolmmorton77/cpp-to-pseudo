@@ -49,7 +49,7 @@ if(g < 4){
 }
 ```
 
-```psuedo
+```pseudo
 for int i = 0 ; i < 10 ; i ++ 
 	print << i * i + i * i << endline 
 int g = 0 
