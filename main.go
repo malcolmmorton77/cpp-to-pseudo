@@ -19,7 +19,7 @@ func ReadWords(filename string) []byte {
 // driver code
 func main() {
 	//declare variables
-	filename := "example.txt"
+	filename := "text.txt"
 
 	//take in a text file with C++ code
 	chars := ReadWords(filename)
