@@ -1,20 +1,15 @@
 package main
 
 import (
+	"errors"
 	"os"
 )
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 
 // takes in the list of tokens, parses them
 // returns nothing
 // outputs a file full of the pseudocode
 // taking out control blocks ({}) and semicolons, replaces cout with print and endl with endline
-func Pseudo(tokens []Token) {
+func Pseudo(tokens []Token) error {
 	flag := 0
 	var tab []rune
 	code := ""
@@ -84,10 +79,11 @@ func Pseudo(tokens []Token) {
 			code += " "
 		case TSPACE: // ignore space
 			continue
+		default:
+			return errors.New("Token is not recognized")
 		}
 	}
-	// fmt.Print(code)
+
 	err := os.WriteFile("pseudocode.txt", []byte(code), 0644)
-	check(err)
-	return
+	return err
 }

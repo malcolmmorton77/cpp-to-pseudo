@@ -15,8 +15,6 @@ const (
 	TOP
 )
 
-const debug bool = false
-
 type Token struct {
 	Raw      string
 	Type     int
@@ -55,7 +53,6 @@ func Tokenizer(input string) ([]Token, error) {
 	var ret []Token
 	lastTokenPos := 0
 	for i := 0; i < len(input); i++ {
-		fmt.Println(lastTokenPos)
 		runes := []rune(input)
 
 		state := START
@@ -64,10 +61,6 @@ func Tokenizer(input string) ([]Token, error) {
 			lastState = state
 			state = Dfa(state, runes[i])
 			i++
-
-			if debug {
-				fmt.Printf("lastState %d currState %d\n", lastState, state)
-			}
 		}
 
 		// If hit end of input need to convert state to lastState
