@@ -79,6 +79,7 @@ func Pseudo(tokens []Token) error {
 			}
 			if token.Raw == ";" {
 				code += "\n"
+				code += string(tab)
 			}
 		case TSLIT, TNLIT, TBLIT, TOP: // print literals
 			code += token.Raw
