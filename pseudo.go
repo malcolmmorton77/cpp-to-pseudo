@@ -43,6 +43,12 @@ func Pseudo(tokens []Token) error {
 				code += token.Raw
 				continue
 			}
+			if token.Raw == "int" || token.Raw == "auto" || token.Raw == "string" || token.Raw == "char" || token.Raw == "double" ||
+				token.Raw == "float" || token.Raw == "long" || token.Raw == "short" {
+				code += "let"
+				code += " "
+				continue
+			}
 			code += token.Raw
 			code += " "
 		case TCTRL: //Ctrl structures
